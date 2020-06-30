@@ -1,0 +1,113 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MaterialApp(
+    home: Imc(),
+  ));
+}
+
+class Imc extends StatefulWidget {
+  @override
+  _ImcState createState() => _ImcState();
+}
+
+class _ImcState extends State<Imc> {
+  TextEditingController pesoController = TextEditingController();
+  TextEditingController alturaController = TextEditingController();
+  String _resultado = "Informe seus dados!";
+
+  void _resetFields() {
+    setState(() {
+      alturaController.text = "";
+      pesoController.text = "";
+      _resultado = "Informe seus dados!";
+    });
+  }
+
+  void _calcularIMC() {
+    setState(() {
+      double peso = double.parse(pesoController.text);
+      double altura = double.parse(alturaController.text) / 100;
+      double imc = peso / (altura * altura);
+
+      if (imc < 18.6) {
+        _resultado = "Pele e osso (${imc.toStringAsPrecision(3)})";
+      } else if (imc >= 18.6 && imc < 24.9) {
+        _resultado = "Peso ideal (${imc.toStringAsPrecision(3)})";
+      } else if (imc >= 24.9 && imc < 29.9) {
+        _resultado = "Levemente acima do peso (${imc.toStringAsPrecision(3)})";
+      } else if (imc >= 29.9 && imc < 34.9) {
+        _resultado = "Obesidade grau I (${imc.toStringAsPrecision(3)})";
+      } else if (imc >= 34.9 && imc < 39.9) {
+        _resultado = "Obesidade grau II (${imc.toStringAsPrecision(3)})";
+      } else if (imc >= 39.9) {
+        _resultado =
+            "Chama um Uber pro hospital (${imc.toStringAsPrecision(5)})";
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Super calculadorinha IMC!"),
+        centerTitle: true,
+        backgroundColor: Colors.pinkAccent,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: _resetFields,
+          )
+        ],
+      ),
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        padding: EdgeInsets.only(right: 10.0, left: 10.0),
+        child: Form(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Icon(Icons.person_pin, size: 120.0, color: Colors.pinkAccent),
+              TextFormField(
+                controller: pesoController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                    labelText: "Peso (Kg)",
+                    labelStyle: TextStyle(color: Colors.red)),
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.pinkAccent, fontSize: 24.0),
+              ),
+              TextFormField(
+                controller: alturaController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                    labelText: "Altura (cm)",
+                    labelStyle: TextStyle(color: Colors.red)),
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.pinkAccent, fontSize: 24.0),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                child: Container(
+                  height: 55.0,
+                  child: RaisedButton(
+                    onPressed: _calcularIMC,
+                    color: Colors.pinkAccent,
+                    child: Text("Calcular IMC",
+                        style: TextStyle(color: Colors.white, fontSize: 24.0)),
+                  ),
+                ),
+              ),
+              Text(
+                "$_resultado",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.pinkAccent, fontSize: 24.0),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
